@@ -9,7 +9,8 @@ class BikeSerializerTests(APITestCase):
     def setUp(self):
         self.bike_attributes = {
             'color': 'yellow',
-            'size': Decimal('52.12')}
+            'size': Decimal('52.12')
+        }
 
         self.serializer_data = {
             'color': 'black',
@@ -40,7 +41,7 @@ class BikeSerializerTests(APITestCase):
     def test_size_lower_bound(self):
         self.serializer_data['size'] = 29.9
 
-        serializer = BikeSerializer(instance=self.bike, data=self.serializer_data)
+        serializer = BikeSerializer(data=self.serializer_data)
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['size']))
@@ -48,7 +49,7 @@ class BikeSerializerTests(APITestCase):
     def test_size_upper_bound(self):
         self.serializer_data['size'] = 60.1
 
-        serializer = BikeSerializer(instance=self.bike, data=self.serializer_data)
+        serializer = BikeSerializer(data=self.serializer_data)
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['size']))
