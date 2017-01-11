@@ -37,11 +37,6 @@ class BikeSerializerTests(APITestCase):
 
         self.assertEqual(data['size'], float(self.bike_attributes['size']))
 
-    def test_size_should_be_float(self):
-        data = self.serializer.data
-
-        self.assertIsInstance(data['size'], float)
-
     def test_size_lower_bound(self):
         self.serializer_data['size'] = 29.9
 
