@@ -9,7 +9,12 @@ class BikeSerializerTests(APITestCase):
     def setUp(self):
         self.bike_attributes = {
             'color': 'yellow',
-            'size': 52.0}
+            'size': Decimal('52.12')}
+
+        self.serializer_data = {
+            'color': 'black',
+            'size': 51.23
+        }
 
         self.bike = Bike.objects.create(**self.bike_attributes)
         self.serializer = BikeSerializer(instance=self.bike)
@@ -25,9 +30,12 @@ class BikeSerializerTests(APITestCase):
         self.assertEqual(data['color'], self.bike_attributes['color'])
 
     def test_size_field_content(self):
+        # Caution:
+        # data['size'] == float(self.bike_attributes['size']
+        # Decimal(data['size']) != self.bike_attributes['size']
         data = self.serializer.data
 
-        self.assertEqual(data['size'], self.bike_attributes['size'])
+        self.assertEqual(data['size'], float(self.bike_attributes['size']))
 
     def test_size_should_be_float(self):
         data = self.serializer.data
@@ -35,28 +43,30 @@ class BikeSerializerTests(APITestCase):
         self.assertIsInstance(data['size'], float)
 
     def test_size_lower_bound(self):
-        self.bike_attributes['size'] = 29.9
+        self.serializer_data['size'] = 29.9
 
-        serializer = BikeSerializer(instance=self.bike, data=self.bike_attributes)
+        serializer = BikeSerializer(instance=self.bike, data=self.serializer_data)
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['size']))
 
     def test_size_upper_bound(self):
-        self.bike_attributes['size'] = 60.1
+        self.serializer_data['size'] = 60.1
 
-        serializer = BikeSerializer(instance=self.bike, data=self.bike_attributes)
+        serializer = BikeSerializer(instance=self.bike, data=self.serializer_data)
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['size']))
 
-    def test_float_to_decimal(self):
-        self.bike_attributes['size'] = 31.789
+    def test_float_data_saves_as_decimal(self):
+        self.serializer_data['size'] = 31.789
 
-        serializer = BikeSerializer(data=self.bike_attributes)
+        serializer = BikeSerializer(data=self.serializer_data)
         serializer.is_valid()
 
         new_bike = serializer.save()
+        # Not refreshing from db will cause the bike size to remain
+        # a float
         new_bike.refresh_from_db()
 
         self.assertEqual(new_bike.size, Decimal('31.79'))
