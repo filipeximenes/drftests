@@ -53,7 +53,7 @@ class BikeSerializerTests(APITestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['size']))
 
-    def test_float_data_saves_as_decimal(self):
+    def test_float_data_correctly_saves_as_decimal(self):
         self.serializer_data['size'] = 31.789
 
         serializer = BikeSerializer(data=self.serializer_data)
