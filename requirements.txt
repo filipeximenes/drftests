@@ -15,7 +15,7 @@ django-model-utils==2.6
 django-naomi==0.8
 django-webpack-loader==0.4.1
 django.js-vinta==0.8.2.dev2
-djangorestframework==3.5.3
+djangorestframework==3.11.2
 fixmydjango==0.1
 flake8==3.2.1
 gunicorn==19.6.0
