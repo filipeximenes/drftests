@@ -3,7 +3,7 @@ appnope==0.1.0
 billiard==3.5.0.2
 boltons==16.1.1
 brotlipy==0.6.0
-celery==4.0.2
+celery==5.2.2
 certifi==2016.9.26
 cffi==1.9.1
 coverage==4.3.1
